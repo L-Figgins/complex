@@ -6,6 +6,7 @@ before_install:
   - docker build -t l.figgins/test-client -f ./client/Dockerfile.dev ./client
 
 script:
+  #fore build
   # you need to bass the env variable through docker when using docker run
   - docker run -e CI=true l.figgins/test-client npm test
 

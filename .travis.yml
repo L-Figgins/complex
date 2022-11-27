@@ -1,0 +1,16 @@
+language: generic
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t l.figgins/test-client -f ./client/Dockerfile.dev ./client
+
+script:
+  # you need to bass the env variable through docker when using docker run
+  - docker run -e CI=true l.figgins/test-client npm test
+
+after_success:
+  - docker build -t l.figgins/multi-client ./client
+  - docker build -t l.figgins/multi-nginx ./nginx
+  - docker build -t l.figgins/multi-server ./server
+  - docker build -t l.figgins/multi-worker ./worker

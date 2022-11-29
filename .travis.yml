@@ -14,5 +14,10 @@ after_success:
   - docker build -t l.figgins/multi-client ./client
   - docker build -t l.figgins/multi-nginx ./nginx
   - docker build -t l.figgins/multi-server ./server
-  - docker build -t l.figgins/multi-worker ./
+  - docker build -t l.figgins/multi-worker ./worker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #login
+  - docker push lfiggins/multi-client
+  - docker push lfiggins/multi-nginx
+  - docker push lfiggins/multi-server
+  - docker push lfiggins/multi-worker

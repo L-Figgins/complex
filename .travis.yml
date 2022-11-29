@@ -11,10 +11,10 @@ script:
   - docker run -e CI=true l.figgins/test-client npm test
 
 after_success:
-  - docker build -t l.figgins/multi-client ./client
-  - docker build -t l.figgins/multi-nginx ./nginx
-  - docker build -t l.figgins/multi-server ./server
-  - docker build -t l.figgins/multi-worker ./worker
+  - docker build -t lfiggins/multi-client ./client
+  - docker build -t lfiggins/multi-nginx ./nginx
+  - docker build -t lfiggins/multi-server ./server
+  - docker build -t lfiggins/multi-worker ./worker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   #login
   - docker push lfiggins/multi-client

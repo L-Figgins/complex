@@ -1,53 +1,53 @@
 version: "3"
 services:
-  postgres:
-    image: "postgres:latest"
+  client:
+    image: "lfiggins/multi-client"
+    mem_limit: 128m
+    hostname: client
+    #no build step for prod
+    # build:
+    #   dockerfile: Dockerfile.dev
+    #   context: ./client
+    #remove volumes like this in production compose config
+    # volumes:
+    #   - /home/node/app/node_modules
+    #   - ./client:/app
+  api:
+    # build:
+    #   dockerfile: Dockerfile.dev
+    #   context: ./server
+    # volumes:
+    #   - /app/node_modules
+    #   - ./server:/app
+    image: "lfiggins/multi-server"
+    hostname: api
     environment:
-      - POSTGRES_PASSWORD=postgres_password
-  redis:
-    image: "redis:latest"
+      # docker services can be passed direclty when using compose
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - PGUSER=$PGUSER
+      - PGHOST=$PGHOST
+      - PGDATABASE=$PGDATABASE
+      - PGPASSWORD=$PGPASSWORD
+      - PGPORT=$PGPORT
+  worker:
+    image: "lfiggins/multi-worker"
+    mem_limit: 128m
+    hostname: worker
+    # build:
+    #   dockerfile: Dockerfile.dev
+    #   context: ./worker
+    # volumes:
+    #   - /app/node_modules
+    #   - ./worker:/app
+    environment:
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
   nginx:
     depends_on:
       - api
       - client
-    restart: always
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
+    mem_limit: 128m
+    hostname: nginx
     ports:
-      - "3000:80"
-  api:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./server
-    volumes:
-      - /app/node_modules
-      - ./server:/app
-    environment:
-      # docker services can be passed direclty when using compose
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - PGUSER=postgres
-      - PGHOST=postgres
-      - PGDATABASE=postgres
-      - PGPASSWORD=postgres_password
-      - PGPORT=5432
-  client:
-    environment:
-      - WDS_SOCKET_PORT=0
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./client
-    volumes:
-      - /app/node_modules
-      - ./client:/app
-  worker:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./worker
-    volumes:
-      - /app/node_modules
-      - ./worker:/app
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - "80:80"

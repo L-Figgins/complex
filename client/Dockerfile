@@ -1,10 +1,10 @@
 FROM node:16-alpine as builder
-USER node
-WORKDIR '/home/node/app'
-COPY --chown=node:node ./package.json .
+WORKDIR '/app'
+COPY ./package.json .
 RUN npm install
-COPY --chown=node:node . .
-CMD ["npm", "run", "build"]
+COPY . .
+# DO NOT USE CMD IN MULTI STAGE BUILDS
+RUN npm run build
 
 FROM  nginx
 EXPOSE 3000

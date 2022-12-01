@@ -11,14 +11,14 @@ services:
       - api
       - client
     restart: always
-    image: lfiggins/multi-nginx
+    image: lfiggins/multi-nginx-dev
     build:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
       - "3000:80"
   api:
-    image: lfiggins/multi-api
+    image: lfiggins/multi-api-dev
     build:
       dockerfile: Dockerfile.dev
       context: ./server
@@ -37,7 +37,7 @@ services:
   client:
     environment:
       - WDS_SOCKET_PORT=0
-    image: lfiggins/multi-client
+    image: lfiggins/multi-client-dev
     build:
       dockerfile: Dockerfile.dev
       context: ./client
@@ -45,13 +45,13 @@ services:
       - /home/node/app/node_modules
       - ./client:/home/node/app
   worker:
-    image: lfiggins/multi-worker
+    image: lfiggins/multi-worker-dev
     build:
       dockerfile: Dockerfile.dev
       context: ./worker
     volumes:
       - /home/node/app/node_modules
-      - ./worker:/app
+      - ./worker:/home/node/app
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379

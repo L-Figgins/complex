@@ -9,4 +9,4 @@ spec:
   ports:
   # default postgres port
   - port: 5432
-    targetPort: 542
+    targetPort: 5432

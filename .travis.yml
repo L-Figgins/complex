@@ -3,7 +3,13 @@ sudo: required
 services:
   - docker
 before_install:
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  # default install directory of google-cloud-sdk
+  - source $HOME/google-cloud-sdk/path.bash.inc
   - docker build -t l.figgins/test-client -f ./client/Dockerfile.dev ./client
+  # update and install 
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
 
 script:
   #fore build
